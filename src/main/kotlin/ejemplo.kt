@@ -1,0 +1,163 @@
+//import com.mongodb.client.MongoClients
+//import com.mongodb.client.MongoDatabase
+//import com.mongodb.client.model.Filters
+//import org.bson.Document
+//import java.util.Scanner
+//
+//const val NOM_SRV = "mongodb://Andrei:yA044SbY@34.224.116.178:27017"
+//const val NOM_BD = "floraBotanica"
+//const val NOM_COLECCION = "plantas"
+//
+//fun mostrarPlantas() {
+//    val cliente = MongoClients.create(NOM_SRV)
+//    val db = cliente.getDatabase(NOM_BD)
+//    val coleccion = db.getCollection(NOM_COLECCION)
+//
+//    // Mostrar documentos de la colección plantas
+//    val cursor = coleccion.find().iterator()
+//    cursor.use {
+//        while (it.hasNext()) {
+//            val doc = it.next()
+//            println(doc.toJson())
+//        }
+//    }
+//
+//    cliente.close()
+//}
+//
+//fun insertarPlanta() {
+//    val scanner = Scanner(System.`in`)
+//
+//    //conectar con la BD
+//    val cliente = MongoClients.create(NOM_SRV)
+//    val db = cliente.getDatabase(NOM_BD)
+//    val coleccion = db.getCollection(NOM_COLECCION)
+//
+//    var id_planta: Int? = null
+//    while (id_planta == null) {
+//        print("ID de la planta: ")
+//        val entrada = scanner.nextLine()
+//        id_planta = entrada.toIntOrNull()
+//        if (id_planta == null) {
+//            println("El ID debe ser un número !!!")
+//        }
+//    }
+//
+//    print("Nombre común: ")
+//    val nombre_comun = scanner.nextLine()
+//    print("Nombre científico: ")
+//    val nombre_cientifico = scanner.nextLine()
+//
+//    var altura: Int? = null
+//    while (altura == null) {
+//        print("Altura (en cm): ")
+//        val entrada = scanner.nextLine()
+//        altura = entrada.toIntOrNull()
+//        if (altura == null) {
+//            println("¡¡¡ La altura debe ser un número !!!")
+//        }
+//    }
+//
+//    val doc = Document("id_planta", id_planta)
+//        .append("nombre_comun", nombre_comun)
+//        .append("nombre_cientifico", nombre_cientifico)
+//        .append("altura", altura)
+//
+//    coleccion.insertOne(doc)
+//    println("Planta insertada con ID: ${doc.getObjectId("_id")}")
+//
+//    cliente.close()
+//    println("Conexión cerrada")
+//}
+//
+
+//fun actualizarAltura() {
+//    val scanner = Scanner(System.`in`)
+//    //conectar con la BD
+//    val cliente = MongoClients.create(NOM_SRV)
+//    val db = cliente.getDatabase(NOM_BD)
+//    val coleccion = db.getCollection(NOM_COLECCION)
+//
+//    var id_planta: Int? = null
+//    while (id_planta == null) {
+//        print("ID de la planta a actualizar: ")
+//        val entrada = scanner.nextLine()
+//        id_planta = entrada.toIntOrNull()
+//        if (id_planta == null) {
+//            println("El ID debe ser un número !!!")
+//        }
+//    }
+//
+//    //comprobar si existe una planta con el id_planta proporcionado por consola
+//    val planta = coleccion.find(Filters.eq("id_planta", id_planta)).firstOrNull()
+//    if (planta == null) {
+//        println("No se encontró ninguna planta con id_planta = \"$id_planta\".")
+//    }
+//    else {
+//        // Mostrar información de la planta encontrada
+//        println("Planta encontrada: ${planta.getString("nombre_comun")} (altura: ${planta.get("altura")} cm)")
+//
+//        //pedir nueva altura
+//        var altura: Int? = null
+//        while (altura == null) {
+//            print("Nueva altura (en cm): ")
+//            val entrada = scanner.nextLine()
+//            altura = entrada.toIntOrNull()
+//            if (altura == null) {
+//                println("¡¡¡ La altura debe ser un número !!!")
+//            }
+//        }
+//
+//        // Actualizar el documento
+//        val result = coleccion.updateOne(
+//            Filters.eq("id_planta", id_planta),
+//            Document("\$set", Document("altura", altura))
+//        )
+//
+//        if (result.modifiedCount > 0)
+//            println("Altura actualizada correctamente (${result.modifiedCount} documento modificado).")
+//        else
+//            println("No se modificó ningún documento (la altura quizá ya era la misma).")
+//    }
+//
+//    cliente.close()
+//    println("Conexión cerrada.")
+//}
+//
+//
+//fun eliminarPlanta() {
+//    val scanner = Scanner(System.`in`)
+//    //conectar con la BD
+//    val cliente = MongoClients.create(NOM_SRV)
+//    val db = cliente.getDatabase(NOM_BD)
+//    val coleccion = db.getCollection(NOM_COLECCION)
+//
+//    var id_planta: Int? = null
+//    while (id_planta == null) {
+//        print("ID de la planta a eliminar: ")
+//        val entrada = scanner.nextLine()
+//        id_planta = entrada.toIntOrNull()
+//        if (id_planta == null) {
+//            println("El ID debe ser un número !!!")
+//        }
+//    }
+//
+//    val result = coleccion.deleteOne(Filters.eq("id_planta", id_planta))
+//    if (result.deletedCount > 0)
+//        println("Planta eliminada correctamente.")
+//    else
+//        println("No se encontró ninguna planta con ese nombre.")
+//
+//    cliente.close()
+//    println("Conexión cerrada.")
+//}
+//
+//fun main() {
+//    mostrarPlantas()
+//    insertarPlanta()
+//    mostrarPlantas()
+//    actualizarAltura()
+//    mostrarPlantas()
+//    eliminarPlanta()
+//    mostrarPlantas()
+//}

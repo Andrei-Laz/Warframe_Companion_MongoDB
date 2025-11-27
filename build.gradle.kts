@@ -11,7 +11,11 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
-    implementation("org.mongodb:mongodb-driver-sync:4.11.0")
+   // implementation("org.mongodb:mongodb-driver-sync:4.11.0")
+
+    implementation("org.mongodb:mongodb-driver-sync:4.11.1")
+    //Logback implementation
+   // implementation("ch.qos.logback:logback-classic:1.4.14")
 }
 
 tasks.test {
