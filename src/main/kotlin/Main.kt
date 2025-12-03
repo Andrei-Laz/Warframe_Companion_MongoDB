@@ -1,7 +1,10 @@
 import com.mongodb.client.MongoClients
+import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.Filters
 import com.mongodb.client.model.Projections
 import org.bson.Document
+import org.bson.json.JsonWriterSettings
+import java.io.File
 import java.util.Scanner
 
 const val NOM_SRV = "mongodb://Andrei:yA044SbY@34.224.116.178:27017"
@@ -9,7 +12,7 @@ const val NOM_BD = "warframeCompanion"
 const val NOM_COLECCION = "warframes"
 
 fun iteradorNumerosValidosInteger(descripcionNumero: String): Int {
-    //método usado para pedir numeros válidos
+    //método usado para pedir numeros enteros válidos
     //recibe un string con el nombre del numero pedido
     val scanner = Scanner(System. `in`)
     var numeroValido: Int? = null
@@ -24,7 +27,7 @@ fun iteradorNumerosValidosInteger(descripcionNumero: String): Int {
 }
 
 fun iteradorNumerosValidosDouble(descripcionNumero: String): Double {
-    //método usado para pedir numeros válidos
+    //método usado para pedir numeros decimales válidos
     //recibe un string con el nombre del numero pedido
     val scanner = Scanner(System. `in`)
     var numeroValido: Double? = null
@@ -227,6 +230,38 @@ fun agregacionesWarframes() {
     client.close()
 }
 
+fun exportarBD(coleccion: MongoCollection<Document>, rutaJSON: String) {
+    val settings = JsonWriterSettings.builder().indent(true).build()
+    val file = File(rutaJSON)
+    file.printWriter().use { out ->
+        out.println("[")
+        val cursor = coleccion.find().iterator()
+        var first = true
+        while (cursor.hasNext()) {
+            if (!first) out.println(",")
+            val doc = cursor.next()
+            out.print(doc.toJson(settings))
+            first = false
+        }
+        out.println("]")
+        cursor.close()
+    }
+
+    println("Exportación de ${coleccion.namespace.collectionName} completada")
+}
+
+fun exportarWarframes() {
+    val client = MongoClients.create(NOM_SRV)
+    val db = client.getDatabase(NOM_BD)
+    val col = db.getCollection(NOM_COLECCION)
+
+    val ruta = "warframes.json"
+
+    exportarBD(col, ruta)
+
+    client.close()
+}
+
 fun main() {
 
     val scanner = Scanner(System.`in`)
@@ -242,6 +277,7 @@ fun main() {
                     "\n\t5- Consultas con filtros" +
                     "\n\t6- Mostrar campos específicos" +
                     "\n\t7- Agregaciones" +
+                    "\n\t8- Exportar la base de datos a archivo JSON"+
                     "\n\t0- Salir del programa"
         )
 
@@ -275,6 +311,10 @@ fun main() {
 
             7 -> {
                 agregacionesWarframes()
+            }
+
+            8 -> {
+                exportarWarframes()
             }
 
             0 -> println("Saliendo del menú...")

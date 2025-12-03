@@ -14,6 +14,7 @@ dependencies {
    // implementation("org.mongodb:mongodb-driver-sync:4.11.0")
 
     implementation("org.mongodb:mongodb-driver-sync:4.11.1")
+    implementation("org.json:json:20231013")
     //Logback implementation
    // implementation("ch.qos.logback:logback-classic:1.4.14")
 }
